@@ -1,29 +1,36 @@
-![Typing SVG](https://readme-typing-svg.herokuapp.com/?lines=Welcome+To+Txt+Uploader+Bot+!)
+# Welcome to **Txt Uploader Bot**! 👋
 
-***Welcome to DRM bot made by @Shivaay20005
+***Welcome to DRM Bot made by [@Shivaay20005](https://t.me/Shivaay20005)***
 
-**Don't Remove Credit tag**
-**Note:** CP DRM SUPPORTED MINIMUM QUALITY 360
+---
+
+### **Please do not remove the credit tag!**
+
+> **Note:** CP DRM is supported with a minimum video quality of **360p**.
+
+---
 
 ## Commands
 
-> /start - Start the Bot.  
-> /stop - Stop the Bot.  
-> /help - To get help for using this bot.
+- `/start` — Start the Bot  
+- `/stop` — Stop the Bot  
+- `/help` — Get help on how to use the Bot
 
-## Deployment Process 
+---
 
-> 1. Fork the Repository
-> 2. edit vars.py and fillup API ID and API HASH
-> 3. edit readme.md and change button link by your repository link
-> 4. Now direct click on button eg. Render, Heroku, Koyeb
+## Deployment Process
 
+1. Fork this repository  
+2. Edit `vars.py` and fill in your **API ID** and **API HASH**  
+3. Edit `README.md` and update the deployment button links to your repository URL  
+4. Click any of the deployment buttons (Render, Heroku, Koyeb) to deploy your own bot  
 
+---
 
-## Deploy Via Buttons
+## Deploy via Buttons
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)]([https://github.com/Shivaay20005/saini-txt-direct])
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://github.com/Shivaay20005/saini-txt-direct)
 
+---
 
-
-
+**Note:** Replace the deployment button URL if you fork this repo to your own GitHub repository, so it points to your repo.
