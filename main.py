@@ -397,7 +397,7 @@ async def start(bot, m: Message):
     await asyncio.sleep(1)
     await start_message.edit_text(
         f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"Initializing Uploader bot... 🤖\n\n"
+        f"Initializing Shivaay... 🤖\n\n"
         f"Progress: [⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 0%\n\n"
     )
 
@@ -427,7 +427,7 @@ async def start(bot, m: Message):
         await start_message.edit_text(
             f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
             f"Great! You are a premium member!\n"
-            f"Use Command : /help to get started 🌟\n\n"
+            f"Use Command : /Shivaay to get started 🌟\n\n"
             f"If you face any problem contact -  [SHIVAAY](https://t.me/Shivaay20005)\n", disable_web_page_preview=True, reply_markup=BUTTONSCONTACT
         )
     else:
