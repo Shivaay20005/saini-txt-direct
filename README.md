@@ -12,8 +12,6 @@
 > /help - To get help for using this bot.
 
 ## Deployment Process 
-Watch YouTube Video
-https://youtu.be/PYDtSTM6w44?si=noKPl7o4iU9SR_TO
 
 > 1. Fork the Repository
 > 2. edit vars.py and fillup API ID and API HASH
