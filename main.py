@@ -149,196 +149,318 @@ async def cookies_handler(client: Client, m: Message):
     except Exception as e:
         await m.reply_text(f"⚠️ An error occurred: {str(e)}")
 
-@bot.on_message(filters.command(["t2t"]))
-async def text_to_txt(client, message: Message):
-    user_id = str(message.from_user.id)
-    # Inform the user to send the text data and its desired file name
-    editable = await message.reply_text(f"<blockquote>Welcome to the Text to .txt Converter!\nSend the **text** for convert into a `.txt` file.</blockquote>")
-    input_message: Message = await bot.listen(message.chat.id)
-    if not input_message.text:
-        await message.reply_text("🚨 **error**: Send valid text data")
-        return
+# @bot.on_message(filters.command(["t2t"]))
+# async def text_to_txt(client, message: Message):
+#     user_id = str(message.from_user.id)
+#     # Inform the user to send the text data and its desired file name
+#     editable = await message.reply_text(f"<blockquote>Welcome to the Text to .txt Converter!\nSend the **text** for convert into a `.txt` file.</blockquote>")
+#     input_message: Message = await bot.listen(message.chat.id)
+#     if not input_message.text:
+#         await message.reply_text("🚨 **error**: Send valid text data")
+#         return
 
-    text_data = input_message.text.strip()
-    await input_message.delete()  # Corrected here
+#     text_data = input_message.text.strip()
+#     await input_message.delete()  # Corrected here
     
-    await editable.edit("**🔄 Send file name or send /d for filename**")
-    inputn: Message = await bot.listen(message.chat.id)
-    raw_textn = inputn.text
-    await inputn.delete()  # Corrected here
-    await editable.delete()
+#     await editable.edit("**🔄 Send file name or send /d for filename**")
+#     inputn: Message = await bot.listen(message.chat.id)
+#     raw_textn = inputn.text
+#     await inputn.delete()  # Corrected here
+#     await editable.delete()
 
-    if raw_textn == '/d':
-        custom_file_name = 'txt_file'
-    else:
-        custom_file_name = raw_textn
+#     if raw_textn == '/d':
+#         custom_file_name = 'txt_file'
+#     else:
+#         custom_file_name = raw_textn
 
-    txt_file = os.path.join("downloads", f'{custom_file_name}.txt')
-    os.makedirs(os.path.dirname(txt_file), exist_ok=True)  # Ensure the directory exists
-    with open(txt_file, 'w') as f:
-        f.write(text_data)
+#     txt_file = os.path.join("downloads", f'{custom_file_name}.txt')
+#     os.makedirs(os.path.dirname(txt_file), exist_ok=True)  # Ensure the directory exists
+#     with open(txt_file, 'w') as f:
+#         f.write(text_data)
         
-    await message.reply_document(document=txt_file, caption=f"`{custom_file_name}.txt`\n\nYou can now download your content! 📥")
-    os.remove(txt_file)
+#     await message.reply_document(document=txt_file, caption=f"`{custom_file_name}.txt`\n\nYou can now download your content! 📥")
+#     os.remove(txt_file)
 
-# Define paths for uploaded file and processed file
-UPLOAD_FOLDER = '/path/to/upload/folder'
-EDITED_FILE_PATH = '/path/to/save/edited_output.txt'
+# # Define paths for uploaded file and processed file
+# UPLOAD_FOLDER = '/path/to/upload/folder'
+# EDITED_FILE_PATH = '/path/to/save/edited_output.txt'
+
+# # @bot.on_message(filters.command(["y2t"]))
+# # async def youtube_to_txt(client, message: Message):
+# #     user_id = str(message.from_user.id)
+    
+# #     editable = await message.reply_text(
+# #         f"Send YouTube Website/Playlist link for convert in .txt file"
+# #     )
+
+# #     input_message: Message = await bot.listen(message.chat.id)
+# #     youtube_link = input_message.text.strip()
+# #     await input_message.delete(True)
+# #     await editable.delete(True)
+
+# #     # Fetch the YouTube information using yt-dlp with cookies
+# #     ydl_opts = {
+# #         'quiet': True,
+# #         'extract_flat': True,
+# #         'skip_download': True,
+# #         'force_generic_extractor': True,
+# #         'forcejson': True,
+# #         'cookies': 'youtube_cookies.txt'  # Specify the cookies file
+# #     }
+
+# #     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+# #         try:
+# #             result = ydl.extract_info(youtube_link, download=False)
+# #             if 'entries' in result:
+# #                 title = result.get('title', 'youtube_playlist')
+# #             else:
+# #                 title = result.get('title', 'youtube_video')
+# #         except yt_dlp.utils.DownloadError as e:
+# #             await message.reply_text(
+# #                 f"<pre><code>🚨 Error occurred {str(e)}</code></pre>"
+# #             )
+# #             return
+
+# #     # Extract the YouTube links
+# #     videos = []
+# #     if 'entries' in result:
+# #         for entry in result['entries']:
+# #             video_title = entry.get('title', 'No title')
+# #             url = entry['url']
+# #             videos.append(f"{video_title}: {url}")
+# #     else:
+# #         video_title = result.get('title', 'No title')
+# #         url = result['url']
+# #         videos.append(f"{video_title}: {url}")
+
+# #     # Create and save the .txt file with the custom name
+# #     txt_file = os.path.join("downloads", f'{title}.txt')
+# #     os.makedirs(os.path.dirname(txt_file), exist_ok=True)  # Ensure the directory exists
+# #     with open(txt_file, 'w') as f:
+# #         f.write('\n'.join(videos))
+
+# #     # Send the generated text file to the user with a pretty caption
+# #     await message.reply_document(
+# #         document=txt_file,
+# #         caption=f'<a href="{youtube_link}">__**Click Here to Open Link**__</a>\n<pre><code>{title}.txt</code></pre>\n'
+# #     )
+
+# import os
+# import asyncio
+# from pyrogram import Client, filters
+# from pyrogram.types import Message
+# from yt_dlp import YoutubeDL
+
+# # Folder to store downloaded videos
+# DOWNLOAD_FOLDER = "downloads"
 
 # @bot.on_message(filters.command(["y2t"]))
-# async def youtube_to_txt(client, message: Message):
+# async def youtube_to_txt(client: Client, message: Message):
 #     user_id = str(message.from_user.id)
-    
-#     editable = await message.reply_text(
-#         f"Send YouTube Website/Playlist link for convert in .txt file"
-#     )
+
+#     # Ask for YouTube link
+#     editable = await message.reply_text("🔗 Please send the YouTube **Video/Playlist link**...")
 
 #     input_message: Message = await bot.listen(message.chat.id)
 #     youtube_link = input_message.text.strip()
 #     await input_message.delete(True)
 #     await editable.delete(True)
 
-#     # Fetch the YouTube information using yt-dlp with cookies
+#     # Ask if user wants to download videos too
+#     prompt_dl = await message.reply_text("📥 Do you want to **download videos too**? (yes/no)")
+#     reply_dl: Message = await bot.listen(message.chat.id)
+#     download_requested = reply_dl.text.strip().lower() in ["yes", "y"]
+#     await reply_dl.delete(True)
+#     await prompt_dl.delete(True)
+
+#     # Setup yt-dlp options
 #     ydl_opts = {
 #         'quiet': True,
 #         'extract_flat': True,
 #         'skip_download': True,
 #         'force_generic_extractor': True,
 #         'forcejson': True,
-#         'cookies': 'youtube_cookies.txt'  # Specify the cookies file
+#         'cookies': 'youtube_cookies.txt'
 #     }
 
-#     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-#         try:
-#             result = ydl.extract_info(youtube_link, download=False)
-#             if 'entries' in result:
-#                 title = result.get('title', 'youtube_playlist')
+#     try:
+#         await message.reply_text("🔍 Extracting information from YouTube...")
+#         with YoutubeDL(ydl_opts) as ydl:
+#             info = ydl.extract_info(youtube_link, download=False)
+
+#         # Prepare the text file
+#         txt_filename = f"{user_id}_youtube_info.txt"
+#         with open(txt_filename, "w", encoding="utf-8") as f:
+#             f.write(f"📁 Title: {info.get('title')}\n")
+#             f.write(f"🔗 URL: {youtube_link}\n\n")
+#             if 'entries' in info:
+#                 for idx, entry in enumerate(info['entries'], 1):
+#                     f.write(f"{idx}. {entry.get('title')} - {entry.get('url')}\n")
 #             else:
-#                 title = result.get('title', 'youtube_video')
-#         except yt_dlp.utils.DownloadError as e:
-#             await message.reply_text(
-#                 f"<pre><code>🚨 Error occurred {str(e)}</code></pre>"
-#             )
-#             return
+#                 f.write(f"Title: {info.get('title')}\n")
+#                 f.write(f"Uploader: {info.get('uploader')}\n")
 
-#     # Extract the YouTube links
-#     videos = []
-#     if 'entries' in result:
-#         for entry in result['entries']:
-#             video_title = entry.get('title', 'No title')
-#             url = entry['url']
-#             videos.append(f"{video_title}: {url}")
-#     else:
-#         video_title = result.get('title', 'No title')
-#         url = result['url']
-#         videos.append(f"{video_title}: {url}")
+#         await message.reply_document(txt_filename, caption="📄 Playlist/Video info saved!")
 
-#     # Create and save the .txt file with the custom name
-#     txt_file = os.path.join("downloads", f'{title}.txt')
-#     os.makedirs(os.path.dirname(txt_file), exist_ok=True)  # Ensure the directory exists
-#     with open(txt_file, 'w') as f:
-#         f.write('\n'.join(videos))
+# # ✅ Safe check before deleting the file
+# if os.path.exists(txt_filename):
+#     os.remove(txt_filename)
 
-#     # Send the generated text file to the user with a pretty caption
-#     await message.reply_document(
-#         document=txt_file,
-#         caption=f'<a href="{youtube_link}">__**Click Here to Open Link**__</a>\n<pre><code>{title}.txt</code></pre>\n'
-#     )
+#         # Download videos if requested
+#         if download_requested:
+#             await message.reply_text("📥 Downloading videos... Please wait.")
 
+#             download_opts = {
+#                 'outtmpl': f'{DOWNLOAD_FOLDER}/%(title).50s.%(ext)s',
+#                 'cookies': 'youtube_cookies.txt',
+#                 'format': 'bestvideo+bestaudio/best',
+#                 'merge_output_format': 'mp4',
+#             }
+
+#             os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+
+#             with YoutubeDL(download_opts) as ydl:
+#                 result = ydl.download([youtube_link])
+
+#             # Send all downloaded files
+#             for filename in os.listdir(DOWNLOAD_FOLDER):
+#                 filepath = os.path.join(DOWNLOAD_FOLDER, filename)
+#                 await client.send_video(
+#                     chat_id=message.chat.id,
+#                     video=filepath,
+#                     caption=f"🎬 {filename}",
+#                     supports_streaming=True
+#                 )
+#                 os.remove(filepath)
+
+#             os.rmdir(DOWNLOAD_FOLDER)
+
+#     except Exception as e:
+#         await message.reply_text(f"❌ Error occurred: `{e}`")
+
+#----------------------------------------------------------------------------------#
 import os
+import re
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from yt_dlp import YoutubeDL
 
-# Folder to store downloaded videos
 DOWNLOAD_FOLDER = "downloads"
 
-@bot.on_message(filters.command(["y2t"]))
+# Regex pattern for validating YouTube video URLs (no playlist)
+YOUTUBE_VIDEO_REGEX = re.compile(
+    r"(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/)[\w-]{11}(&.*)?"
+)
+
+@Client.on_message(filters.command("y2t"))
 async def youtube_to_txt(client: Client, message: Message):
     user_id = str(message.from_user.id)
 
-    # Ask for YouTube link
-    editable = await message.reply_text("🔗 Please send the YouTube **Video/Playlist link**...")
+    # Step 1: Ask for YouTube video URL
+    await message.reply_text("🔗 Please send the YouTube **video** link (no playlists)...")
 
-    input_message: Message = await bot.listen(message.chat.id)
-    youtube_link = input_message.text.strip()
-    await input_message.delete(True)
-    await editable.delete(True)
+    try:
+        input_message: Message = await client.listen(message.chat.id, timeout=60)
+        youtube_link = input_message.text.strip()
+        await input_message.delete(True)
+    except asyncio.TimeoutError:
+        await message.reply_text("⌛ Timeout! Please send the `/y2t` command again and provide the link quickly.")
+        return
 
-    # Ask if user wants to download videos too
-    prompt_dl = await message.reply_text("📥 Do you want to **download videos too**? (yes/no)")
-    reply_dl: Message = await bot.listen(message.chat.id)
-    download_requested = reply_dl.text.strip().lower() in ["yes", "y"]
-    await reply_dl.delete(True)
-    await prompt_dl.delete(True)
+    # Step 2: Validate YouTube video URL (reject playlists)
+    if not YOUTUBE_VIDEO_REGEX.match(youtube_link):
+        await message.reply_text("❌ Invalid YouTube video URL! Please send a valid single video URL only.")
+        return
 
-    # Setup yt-dlp options
+    # yt-dlp options for info extraction (no download)
     ydl_opts = {
         'quiet': True,
-        'extract_flat': True,
         'skip_download': True,
-        'force_generic_extractor': True,
         'forcejson': True,
-        'cookies': 'youtube_cookies.txt'
+        # You can add cookies if needed: 'cookiefile': 'youtube_cookies.txt'
     }
 
     try:
-        await message.reply_text("🔍 Extracting information from YouTube...")
+        await message.reply_text("🔍 Extracting video information...")
+
+        # Extract video info
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(youtube_link, download=False)
 
-        # Prepare the text file
+        # Prepare info text file
         txt_filename = f"{user_id}_youtube_info.txt"
         with open(txt_filename, "w", encoding="utf-8") as f:
             f.write(f"📁 Title: {info.get('title')}\n")
-            f.write(f"🔗 URL: {youtube_link}\n\n")
-            if 'entries' in info:
-                for idx, entry in enumerate(info['entries'], 1):
-                    f.write(f"{idx}. {entry.get('title')} - {entry.get('url')}\n")
-            else:
-                f.write(f"Title: {info.get('title')}\n")
-                f.write(f"Uploader: {info.get('uploader')}\n")
+            f.write(f"🔗 URL: {youtube_link}\n")
+            f.write(f"👤 Uploader: {info.get('uploader')}\n")
+            f.write(f"📅 Upload date: {info.get('upload_date')}\n")
+            f.write(f"⌛ Duration: {info.get('duration')} seconds\n")
+            f.write(f"⭐ Average rating: {info.get('average_rating')}\n")
+            f.write(f"👁️ View count: {info.get('view_count')}\n")
 
-        await message.reply_document(txt_filename, caption="📄 Playlist/Video info saved!")
+        # Send info file to user
+        await message.reply_document(txt_filename, caption="📄 Video info saved!")
 
-# ✅ Safe check before deleting the file
-if os.path.exists(txt_filename):
-    os.remove(txt_filename)
+        # Delete info file safely
+        if os.path.exists(txt_filename):
+            os.remove(txt_filename)
 
-        # Download videos if requested
+        # Ask user if they want to download the video
+        prompt_dl = await message.reply_text("📥 Do you want to download the video? (yes/no)")
+
+        try:
+            reply_dl: Message = await client.listen(message.chat.id, timeout=30)
+            download_requested = reply_dl.text.strip().lower() in ["yes", "y"]
+            await reply_dl.delete(True)
+            await prompt_dl.delete(True)
+        except asyncio.TimeoutError:
+            await prompt_dl.edit_text("⌛ Timeout! Assuming no download requested.")
+            download_requested = False
+
         if download_requested:
-            await message.reply_text("📥 Downloading videos... Please wait.")
+            await message.reply_text("📥 Downloading video... Please wait.")
+
+            # Prepare download folder
+            os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
             download_opts = {
                 'outtmpl': f'{DOWNLOAD_FOLDER}/%(title).50s.%(ext)s',
-                'cookies': 'youtube_cookies.txt',
                 'format': 'bestvideo+bestaudio/best',
                 'merge_output_format': 'mp4',
+                # Add cookies here if needed, e.g. 'cookiefile': 'youtube_cookies.txt'
             }
 
-            os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
-
             with YoutubeDL(download_opts) as ydl:
-                result = ydl.download([youtube_link])
+                ydl.download([youtube_link])
 
-            # Send all downloaded files
-            for filename in os.listdir(DOWNLOAD_FOLDER):
-                filepath = os.path.join(DOWNLOAD_FOLDER, filename)
-                await client.send_video(
-                    chat_id=message.chat.id,
-                    video=filepath,
-                    caption=f"🎬 {filename}",
-                    supports_streaming=True
-                )
-                os.remove(filepath)
+            # Find downloaded file (should be one file)
+            files = os.listdir(DOWNLOAD_FOLDER)
+            if not files:
+                await message.reply_text("❌ Download failed or no files found.")
+                return
 
+            video_path = os.path.join(DOWNLOAD_FOLDER, files[0])
+
+            # Send video to user
+            await client.send_video(
+                chat_id=message.chat.id,
+                video=video_path,
+                caption=f"🎬 {files[0]}",
+                supports_streaming=True
+            )
+
+            # Cleanup
+            os.remove(video_path)
             os.rmdir(DOWNLOAD_FOLDER)
 
     except Exception as e:
         await message.reply_text(f"❌ Error occurred: `{e}`")
 
 
+
+
+#------------------------------------------------------------------------------------#
 
 
 m_file_path= "main.py"
