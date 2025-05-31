@@ -302,7 +302,7 @@ async def youtube_to_txt(client: Client, message: Message):
 
         await message.reply_document(txt_filename, caption="📄 Playlist/Video info saved!")
         if os.path.exists(txt_filename):
-    os.remove(txt_filename)
+            os.remove(txt_filename)
 
         # os.remove(txt_filename)
 
@@ -339,11 +339,6 @@ async def youtube_to_txt(client: Client, message: Message):
         await message.reply_text(f"❌ Error occurred: `{e}`")
 
 
-
-
-
-    # Remove the temporary text file after sending
-    os.remove(txt_file)
 
 
 m_file_path= "main.py"
