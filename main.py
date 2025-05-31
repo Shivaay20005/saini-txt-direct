@@ -118,45 +118,98 @@ image_urls = [
     ##################################################################################################
 
 
+AUTH_FILE = "auth_users.txt"
+
+# 🔽 Load all authorized users from file
+def get_all_user_ids():
+    if not os.path.exists(AUTH_FILE):
+        return []
+    with open(AUTH_FILE, "r") as f:
+        return [int(line.strip()) for line in f if line.strip().isdigit()]
+
+# 🔽 Add a user ID
+def add_auth_user_to_file(user_id: int):
+    users = get_all_user_ids()
+    if user_id not in users:
+        with open(AUTH_FILE, "a") as f:
+            f.write(f"{user_id}\n")
+
+# 🔽 Remove a user ID
+def remove_auth_user_from_file(user_id: int):
+    users = get_all_user_ids()
+    users = [uid for uid in users if uid != user_id]
+    with open(AUTH_FILE, "w") as f:
+        for uid in users:
+            f.write(f"{uid}\n")
+
+
+
+
+
+
+
 
 @bot.on_message(filters.command("addauth") & filters.private)
 async def add_auth_user(client: Client, message: Message):
     if message.chat.id != OWNER:
-        return await message.reply_text("You are not authorized to use this command.")
-    
+        return await message.reply_text("🚫 You are not authorized to use this command.")
+
     try:
         new_user_id = int(message.command[1])
-        if new_user_id in AUTH_USERS:
-            await message.reply_text("User ID is already authorized.")
-        else:
-            AUTH_USERS.append(new_user_id)
-            await message.reply_text(f"User ID {new_user_id} added to authorized users.")
-    except (IndexError, ValueError):
-        await message.reply_text("Please provide a valid user ID.")
+        current_users = get_all_user_ids()
 
-@bot.on_message(filters.command("users") & filters.private)
-async def list_auth_users(client: Client, message: Message):
-    if message.chat.id != OWNER:
-        return await message.reply_text("You are not authorized to use this command.")
-    
-    user_list = '\n'.join(map(str, get_all_user_ids()))  # Get user IDs from MongoDB
-    await message.reply_text(f"Authorized Users:\n{user_list}")
+        if new_user_id in current_users:
+            await message.reply_text("✅ This user is already authorized.")
+        else:
+            add_auth_user_to_file(new_user_id)
+            await message.reply_text(f"✅ User ID `{new_user_id}` added to authorized users.")
+    except (IndexError, ValueError):
+        await message.reply_text("⚠️ Please provide a valid user ID.\nUsage: `/addauth 123456789`")
+
+
+
+
+
 
 @bot.on_message(filters.command("rmauth") & filters.private)
 async def remove_auth_user(client: Client, message: Message):
     if message.chat.id != OWNER:
-        return await message.reply_text("You are not authorized to use this command.")
-    
+        return await message.reply_text("🚫 You are not authorized to use this command.")
+
     try:
         user_id_to_remove = int(message.command[1])
-        if user_id_to_remove not in AUTH_USERS:
-            await message.reply_text("User ID is not in the authorized users list.")
+        current_users = get_all_user_ids()
+
+        if user_id_to_remove not in current_users:
+            await message.reply_text("⚠️ This user is not authorized.")
         else:
-            AUTH_USERS.remove(user_id_to_remove)
-            await message.reply_text(f"User ID {user_id_to_remove} removed from authorized users.")
+            remove_auth_user_from_file(user_id_to_remove)
+            await message.reply_text(f"❌ User ID `{user_id_to_remove}` removed from authorized users.")
     except (IndexError, ValueError):
-        await message.reply_text("Please provide a valid user ID.")
-    
+        await message.reply_text("⚠️ Please provide a valid user ID.\nUsage: `/rmauth 123456789`")
+
+
+
+
+
+@bot.on_message(filters.command("users") & filters.private)
+async def list_auth_users(client: Client, message: Message):
+    if message.chat.id != OWNER:
+        return await message.reply_text("🚫 You are not authorized to use this command.")
+
+    user_ids = get_all_user_ids()
+
+    if not user_ids:
+        return await message.reply_text("📭 No authorized users found.")
+
+    user_list = "\n".join(f"🔹 `{uid}`" for uid in user_ids)
+    await message.reply_text(f"👤 Authorized Users:\n\n{user_list}")
+
+
+
+
+
+
         
         #################################################################################################
 @bot.on_message(filters.command("cookies") & filters.private)
