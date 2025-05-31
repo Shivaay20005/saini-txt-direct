@@ -584,10 +584,6 @@ async def send_logs(client: Client, m: Message):  # Correct parameter name
 #         return
     #########################################################################################
 
-import os
-from pyrogram import Client
-from pyrogram.types import Message
-
 
 async def txt_handler(bot: Client, m: Message):  
     # Prompt the user to send a TXT file with Name: URL format
