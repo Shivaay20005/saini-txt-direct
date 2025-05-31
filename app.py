@@ -61,7 +61,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return """
+    return 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,7 +97,6 @@ def hello_world():
 
 </body>
 </html>
-"""
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
