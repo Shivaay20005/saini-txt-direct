@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: SAINI TXT DIRECT 
+    name: SHIVAAY TXT DIRECT 
     plan: free
     env: docker
     dockerfilePath: Dockerfile
