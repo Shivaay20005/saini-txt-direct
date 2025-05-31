@@ -78,6 +78,47 @@ image_urls = [
 
 ######################################################################
 
+# @bot.on_message(filters.command("addauth") & filters.private)
+# async def add_auth_user(client: Client, message: Message):
+#     if message.chat.id != OWNER:
+#         return await message.reply_text("You are not authorized to use this command.")
+    
+#     try:
+#         new_user_id = int(message.command[1])
+#         if new_user_id in AUTH_USERS:
+#             await message.reply_text("User ID is already authorized.")
+#         else:
+#             AUTH_USERS.append(new_user_id)
+#             await message.reply_text(f"User ID {new_user_id} added to authorized users.")
+#     except (IndexError, ValueError):
+#         await message.reply_text("Please provide a valid user ID.")
+
+# @bot.on_message(filters.command("users") & filters.private)
+# async def list_auth_users(client: Client, message: Message):
+#     if message.chat.id != OWNER:
+#         return await message.reply_text("You are not authorized to use this command.")
+    
+#     user_list = '\n'.join(map(str, get_all_user_ids()))  # Get user IDs from MongoDB
+#     await message.reply_text(f"Authorized Users:\n{user_list}")
+
+# @bot.on_message(filters.command("rmauth") & filters.private)
+# async def remove_auth_user(client: Client, message: Message):
+#     if message.chat.id != OWNER:
+#         return await message.reply_text("You are not authorized to use this command.")
+    
+#     try:
+#         user_id_to_remove = int(message.command[1])
+#         if user_id_to_remove not in AUTH_USERS:
+#             await message.reply_text("User ID is not in the authorized users list.")
+#         else:
+#             AUTH_USERS.remove(user_id_to_remove)
+#             await message.reply_text(f"User ID {user_id_to_remove} removed from authorized users.")
+#     except (IndexError, ValueError):
+#         await message.reply_text("Please provide a valid user ID.")
+    ##################################################################################################
+
+
+
 @bot.on_message(filters.command("addauth") & filters.private)
 async def add_auth_user(client: Client, message: Message):
     if message.chat.id != OWNER:
@@ -117,6 +158,7 @@ async def remove_auth_user(client: Client, message: Message):
         await message.reply_text("Please provide a valid user ID.")
     
         
+        #################################################################################################
 @bot.on_message(filters.command("cookies") & filters.private)
 async def cookies_handler(client: Client, m: Message):
     await m.reply_text(
