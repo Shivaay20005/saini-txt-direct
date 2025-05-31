@@ -301,10 +301,10 @@ async def youtube_to_txt(client: Client, message: Message):
                 f.write(f"Uploader: {info.get('uploader')}\n")
 
         await message.reply_document(txt_filename, caption="📄 Playlist/Video info saved!")
-        if os.path.exists(txt_filename):
-    os.remove(txt_filename)
 
-        # os.remove(txt_filename)
+# ✅ Safe check before deleting the file
+if os.path.exists(txt_filename):
+    os.remove(txt_filename)
 
         # Download videos if requested
         if download_requested:
