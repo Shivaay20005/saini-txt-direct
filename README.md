@@ -29,7 +29,9 @@
 
 ## Deploy via Buttons
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://github.com/Shivaay20005/saini-txt-direct)
+## Deploy via Heroku
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Shivaay20005/saini-txt-direct)
 
 ---
 
