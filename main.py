@@ -550,39 +550,122 @@ async def send_logs(client: Client, m: Message):  # Correct parameter name
         await m.reply_text(f"Error sending logs: {e}")
 
 @bot.on_message(filters.command(["drm"]) )
-async def txt_handler(bot: Client, m: Message):  
-    editable = await m.reply_text(f"__Hii, I am drm Downloader Bot__\n\n<i>Send Me Your txt file which enclude Name with url...\nE.g: Name: Link</i>")
-    input: Message = await bot.listen(editable.chat.id)
-    x = await input.download()
-    await input.delete(True)
-    file_name, ext = os.path.splitext(os.path.basename(x))  # Extract filename & extension
-    path = f"./downloads/{m.chat.id}"
-    pdf_count = 0
-    img_count = 0
-    other_count = 0
+# async def txt_handler(bot: Client, m: Message):  
+#     editable = await m.reply_text(f"__Hii, I am drm Downloader Bot__\n\n<i>Send Me Your txt file which enclude Name with url...\nE.g: Name: Link</i>")
+#     input: Message = await bot.listen(editable.chat.id)
+#     x = await input.download()
+#     await input.delete(True)
+#     file_name, ext = os.path.splitext(os.path.basename(x))  # Extract filename & extension
+#     path = f"./downloads/{m.chat.id}"
+#     pdf_count = 0
+#     img_count = 0
+#     other_count = 0
     
-    try:    
-        with open(x, "r") as f:
-            content = f.read()
-        content = content.split("\n")
+#     try:    
+#         with open(x, "r") as f:
+#             content = f.read()
+#         content = content.split("\n")
         
+#         links = []
+#         for i in content:
+#             if "://" in i:
+#                 url = i.split("://", 1)[1]
+#                 links.append(i.split("://", 1))
+#                 if ".pdf" in url:
+#                     pdf_count += 1
+#                 elif url.endswith((".png", ".jpeg", ".jpg")):
+#                     img_count += 1
+#                 else:
+#                     other_count += 1
+#         os.remove(x)
+#     except:
+#         await m.reply_text("<pre><code>🔹Invalid file input.</code></pre>")
+#         os.remove(x)
+#         return
+    #########################################################################################
+
+import os
+from pyrogram import Client
+from pyrogram.types import Message
+
+
+async def txt_handler(bot: Client, m: Message):  
+    # Prompt the user to send a TXT file with Name: URL format
+    editable = await m.reply_text(
+        "__👋 Hi, I am the DRM Downloader Bot__\n\n"
+        "<i>📄 Send me your TXT file containing lines like:</i>\n"
+        "<code>Name: https://example.com/file.pdf</code>"
+    )
+
+    try:
+        # Wait for the user's reply (file)
+        input: Message = await bot.listen(editable.chat.id, timeout=180)
+        
+        # Check if the message contains a document
+        if not input.document or not input.document.file_name.endswith(".txt"):
+            await editable.edit_text("⚠️ Please send a valid `.txt` file.")
+            return
+
+        # Download the file
+        x = await input.download()
+        await input.delete()
+
+        # Prepare stats
+        pdf_count = 0
+        img_count = 0
+        other_count = 0
+
+        # Read the file
+        with open(x, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+
         links = []
-        for i in content:
-            if "://" in i:
-                url = i.split("://", 1)[1]
-                links.append(i.split("://", 1))
-                if ".pdf" in url:
+
+        for line in lines:
+            line = line.strip()
+            if not line or ":" not in line:
+                continue  # Skip empty or invalid lines
+
+            try:
+                name, url = line.split(":", 1)
+                url = url.strip()
+
+                # Track by type
+                if ".pdf" in url.lower():
                     pdf_count += 1
-                elif url.endswith((".png", ".jpeg", ".jpg")):
+                elif url.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
                     img_count += 1
                 else:
                     other_count += 1
-        os.remove(x)
-    except:
-        await m.reply_text("<pre><code>🔹Invalid file input.</code></pre>")
-        os.remove(x)
-        return
-    
+
+                links.append((name.strip(), url))
+
+            except ValueError:
+                continue  # Skip lines without proper format
+
+        os.remove(x)  # Clean up the downloaded TXT file
+
+        # Send summary back to the user
+        await m.reply_text(
+            f"✅ File processed successfully!\n\n"
+            f"🔹 Total Valid Links: {len(links)}\n"
+            f"📚 PDF Links: {pdf_count}\n"
+            f"🖼️ Image Links: {img_count}\n"
+            f"📁 Other Links: {other_count}"
+        )
+
+        # You can now process `links` list if needed
+
+    except TimeoutError:
+        await m.reply_text("⌛ Timed out. Please try again.")
+    except Exception as e:
+        await m.reply_text(f"❌ Error: {str(e)}")
+    finally:
+        # Ensure cleanup even on error
+        if os.path.exists(x):
+            os.remove(x)
+
+###################################################################################################
     await editable.edit(f"Total 🔗 links found are {len(links)}\nSend From where you want to download.initial is 1")
     if m.chat.id not in AUTH_USERS:
         print(f"User ID not in AUTH_USERS", m.chat.id)
