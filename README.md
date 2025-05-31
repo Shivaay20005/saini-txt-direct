@@ -1,5 +1,13 @@
 # Welcome to **Txt Uploader Bot**! 👋
 
+<p align="center">
+  <img src="https://files.catbox.moe/5csii6.jpg" alt="SHIVAAY-TXT-LEECH-BOT Logo">
+</p>
+<h1 align="center">
+  SHIVAAY TXT UPLOADER BOT
+</h1>
+
+
 ***Welcome to DRM Bot made by [@Shivaay20005](https://t.me/Shivaay20005)***
 
 ---
@@ -36,13 +44,6 @@
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Shivaay20005/saini-txt-direct)
 
 ---
-
-<p align="center">
-  <img src="https://files.catbox.moe/5csii6.jpg" alt="SHIVAAY-TXT-LEECH-BOT Logo">
-</p>
-<h1 align="center">
-  SHIVAAY TXT LEECH BOT
-</h1>
 
 
 
