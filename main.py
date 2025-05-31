@@ -64,155 +64,56 @@ keyboard = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton(text="🛠️ Help", url="https://t.me/Shivaay20005"),
-            # InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/Shivaay20005/saini-txt-direct"),
+            InlineKeyboardButton(text="🎥 Movie Channel", url="https://t.me/+jRWnUeOBqAxiMDY1"),
         ],
     ]
 )
 
 # Image URLs for the random image feature
 image_urls = [
-    "https://tinypic.host/images/2025/05/31/1000028228.jpg",
+    "https://telegra.ph/file/cad7038fe82e47f79c609.jpg",
     "https://tinypic.host/images/2025/05/31/1000028228.jpg",
     # Add more image URLs as needed
 ]
-
-######################################################################
-
-# @bot.on_message(filters.command("addauth") & filters.private)
-# async def add_auth_user(client: Client, message: Message):
-#     if message.chat.id != OWNER:
-#         return await message.reply_text("You are not authorized to use this command.")
-    
-#     try:
-#         new_user_id = int(message.command[1])
-#         if new_user_id in AUTH_USERS:
-#             await message.reply_text("User ID is already authorized.")
-#         else:
-#             AUTH_USERS.append(new_user_id)
-#             await message.reply_text(f"User ID {new_user_id} added to authorized users.")
-#     except (IndexError, ValueError):
-#         await message.reply_text("Please provide a valid user ID.")
-
-# @bot.on_message(filters.command("users") & filters.private)
-# async def list_auth_users(client: Client, message: Message):
-#     if message.chat.id != OWNER:
-#         return await message.reply_text("You are not authorized to use this command.")
-    
-#     user_list = '\n'.join(map(str, get_all_user_ids()))  # Get user IDs from MongoDB
-#     await message.reply_text(f"Authorized Users:\n{user_list}")
-
-# @bot.on_message(filters.command("rmauth") & filters.private)
-# async def remove_auth_user(client: Client, message: Message):
-#     if message.chat.id != OWNER:
-#         return await message.reply_text("You are not authorized to use this command.")
-    
-#     try:
-#         user_id_to_remove = int(message.command[1])
-#         if user_id_to_remove not in AUTH_USERS:
-#             await message.reply_text("User ID is not in the authorized users list.")
-#         else:
-#             AUTH_USERS.remove(user_id_to_remove)
-#             await message.reply_text(f"User ID {user_id_to_remove} removed from authorized users.")
-#     except (IndexError, ValueError):
-#         await message.reply_text("Please provide a valid user ID.")
-    ##################################################################################################
-
-
-AUTH_FILE = "auth_users.txt"
-
-# 🔽 Load all authorized users from file
-def get_all_user_ids():
-    if not os.path.exists(AUTH_FILE):
-        return []
-    with open(AUTH_FILE, "r") as f:
-        return [int(line.strip()) for line in f if line.strip().isdigit()]
-
-# 🔽 Add a user ID
-def add_auth_user_to_file(user_id: int):
-    users = get_all_user_ids()
-    if user_id not in users:
-        with open(AUTH_FILE, "a") as f:
-            f.write(f"{user_id}\n")
-
-# 🔽 Remove a user ID
-def remove_auth_user_from_file(user_id: int):
-    users = get_all_user_ids()
-    users = [uid for uid in users if uid != user_id]
-    with open(AUTH_FILE, "w") as f:
-        for uid in users:
-            f.write(f"{uid}\n")
-
-
-
-
-
-
-
-
 @bot.on_message(filters.command("addauth") & filters.private)
 async def add_auth_user(client: Client, message: Message):
     if message.chat.id != OWNER:
-        return await message.reply_text("🚫 You are not authorized to use this command.")
-
+        return await message.reply_text("You are not authorized to use this command.")
+    
     try:
         new_user_id = int(message.command[1])
-        current_users = get_all_user_ids()
-
-        if new_user_id in current_users:
-            await message.reply_text("✅ This user is already authorized.")
+        if new_user_id in AUTH_USERS:
+            await message.reply_text("User ID is already authorized.")
         else:
-            add_auth_user_to_file(new_user_id)
-            await message.reply_text(f"✅ User ID `{new_user_id}` added to authorized users.")
+            AUTH_USERS.append(new_user_id)
+            await message.reply_text(f"User ID {new_user_id} added to authorized users.")
     except (IndexError, ValueError):
-        await message.reply_text("⚠️ Please provide a valid user ID.\nUsage: `/addauth 123456789`")
-
-
-
-
-
-
-@bot.on_message(filters.command("rmauth") & filters.private)
-async def remove_auth_user(client: Client, message: Message):
-    if message.chat.id != OWNER:
-        return await message.reply_text("🚫 You are not authorized to use this command.")
-
-    try:
-        user_id_to_remove = int(message.command[1])
-        current_users = get_all_user_ids()
-
-        if user_id_to_remove not in current_users:
-            await message.reply_text("⚠️ This user is not authorized.")
-        else:
-            remove_auth_user_from_file(user_id_to_remove)
-            await message.reply_text(f"❌ User ID `{user_id_to_remove}` removed from authorized users.")
-    except (IndexError, ValueError):
-        await message.reply_text("⚠️ Please provide a valid user ID.\nUsage: `/rmauth 123456789`")
-
-
-
-
+        await message.reply_text("Please provide a valid user ID.")
 
 @bot.on_message(filters.command("users") & filters.private)
 async def list_auth_users(client: Client, message: Message):
     if message.chat.id != OWNER:
-        return await message.reply_text("🚫 You are not authorized to use this command.")
+        return await message.reply_text("You are not authorized to use this command.")
+    
+    user_list = '\n'.join(map(str, get_all_user_ids()))  # Get user IDs from MongoDB
+    await message.reply_text(f"Authorized Users:\n{user_list}")
 
-    user_ids = get_all_user_ids()
-
-    if not user_ids:
-        return await message.reply_text("📭 No authorized users found.")
-
-    user_list = "\n".join(f"🔹 `{uid}`" for uid in user_ids)
-    await message.reply_text(f"👤 Authorized Users:\n\n{user_list}")
-
-
-
-
-
-
+@bot.on_message(filters.command("rmauth") & filters.private)
+async def remove_auth_user(client: Client, message: Message):
+    if message.chat.id != OWNER:
+        return await message.reply_text("You are not authorized to use this command.")
+    
+    try:
+        user_id_to_remove = int(message.command[1])
+        if user_id_to_remove not in AUTH_USERS:
+            await message.reply_text("User ID is not in the authorized users list.")
+        else:
+            AUTH_USERS.remove(user_id_to_remove)
+            await message.reply_text(f"User ID {user_id_to_remove} removed from authorized users.")
+    except (IndexError, ValueError):
+        await message.reply_text("Please provide a valid user ID.")
+    
         
-        #################################################################################################
-       
 @bot.on_message(filters.command("cookies") & filters.private)
 async def cookies_handler(client: Client, m: Message):
     await m.reply_text(
@@ -398,7 +299,7 @@ async def start(bot, m: Message):
     await asyncio.sleep(1)
     await start_message.edit_text(
         f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"Initializing Shivaay bot... 🤖\n\n"
+        f"Initializing Shivaay ... 🤖\n\n"
         f"Progress: [⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️⬜️] 0%\n\n"
     )
 
@@ -429,7 +330,7 @@ async def start(bot, m: Message):
             f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
             f"Great! You are a premium member!\n"
             f"Use Command : /Shivaay to get started 🌟\n\n"
-            f"If you face any problem contact -  [SHIVAAY](https://t.me/Shivaay20005)\n", disable_web_page_preview=True, reply_markup=BUTTONSCONTACT
+            f"If you face any problem contact -  [Shivaay](https://t.me/Shivaay20005)\n", disable_web_page_preview=True, reply_markup=BUTTONSCONTACT
         )
     else:
         await asyncio.sleep(2)
@@ -462,7 +363,7 @@ async def id_command(client, message: Message):
     await message.reply_text(
         f" 🎉 Welcome {message.from_user.first_name} to DRM Bot! 🎉\n\n"
            f"You can have access to download all Non-DRM+AES Encrypted URLs 🔐 including\n\n"
-           f"Use Command : /help to get started 🌟\n\n"
+           f"Use Command : /Shivaay to get started 🌟\n\n"
            f"• 📚 Appx Zip+Encrypted Url\n"
            f"• 🎓 Classplus DRM+ NDRM\n"
            f"• 🧑‍🏫 PhysicsWallah DRM\n"
