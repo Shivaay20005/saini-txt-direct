@@ -148,77 +148,60 @@ async def cookies_handler(client: Client, m: Message):
     except Exception as e:
         await m.reply_text(f"⚠️ An error occurred: {str(e)}")
 
-@bot.on_message(filters.command(["t2t"]))
-async def text_to_txt(client, message: Message):
-    user_id = str(message.from_user.id)
-    # Inform the user to send the text data and its desired file name
-    editable = await message.reply_text(f"<blockquote>Welcome to the Text to .txt Converter!\nSend the **text** for convert into a `.txt` file.</blockquote>")
-    input_message: Message = await bot.listen(message.chat.id)
-    if not input_message.text:
-        await message.reply_text("🚨 **error**: Send valid text data")
-        return
-
-    text_data = input_message.text.strip()
-    await input_message.delete()  # Corrected here
-    
-    await editable.edit("**🔄 Send file name or send /d for filename**")
-    inputn: Message = await bot.listen(message.chat.id)
-    raw_textn = inputn.text
-    await inputn.delete()  # Corrected here
-    await editable.delete()
-
-    if raw_textn == '/d':
-        custom_file_name = 'txt_file'
-    else:
-        custom_file_name = raw_textn
-
-    txt_file = os.path.join("downloads", f'{custom_file_name}.txt')
-    os.makedirs(os.path.dirname(txt_file), exist_ok=True)  # Ensure the directory exists
-    with open(txt_file, 'w') as f:
-        f.write(text_data)
-        
-    await message.reply_document(document=txt_file, caption=f"`{custom_file_name}.txt`\n\nYou can now download your content! 📥")
-    os.remove(txt_file)
-
-# Define paths for uploaded file and processed file
-UPLOAD_FOLDER = '/path/to/upload/folder'
-EDITED_FILE_PATH = '/path/to/save/edited_output.txt'
+from pyrogram import filters
+from pyrogram.types import Message
+import yt_dlp
+import os
 
 @bot.on_message(filters.command(["y2t"]))
 async def youtube_to_txt(client, message: Message):
     user_id = str(message.from_user.id)
     
-    editable = await message.reply_text(
-        f"Send YouTube Website/Playlist link for convert in .txt file"
-    )
+    editable = await message.reply_text("📩 Send YouTube video or playlist link to convert into a `.txt` file")
 
-    input_message: Message = await bot.listen(message.chat.id)
+    # Wait for user input only
+    input_message: Message = await bot.listen(message.chat.id, filters=filters.user(message.from_user.id))
     youtube_link = input_message.text.strip()
+    
     await input_message.delete(True)
     await editable.delete(True)
 
-    # Fetch the YouTube information using yt-dlp with cookies
+    # yt-dlp config
     ydl_opts = {
         'quiet': True,
         'extract_flat': True,
         'skip_download': True,
         'force_generic_extractor': True,
         'forcejson': True,
-        'cookies': 'youtube_cookies.txt'  # Specify the cookies file
+        'cookies': 'youtube_cookies.txt'
     }
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(youtube_link, download=False)
+
+            title = result.get("title", "yt_output")
+            lines = []
+
             if 'entries' in result:
-                title = result.get('title', 'youtube_playlist')
+                for entry in result['entries']:
+                    lines.append(f"{entry.get('title')} - {entry.get('url')}")
             else:
-                title = result.get('title', 'youtube_video')
-        except yt_dlp.utils.DownloadError as e:
-            await message.reply_text(
-                f"<pre><code>🚨 Error occurred {str(e)}</code></pre>"
-            )
-            return
+                lines.append(f"{result.get('title')} - {youtube_link}")
+
+            # Write to file
+            txt_file_path = f"{title}.txt"
+            with open(txt_file_path, "w", encoding="utf-8") as f:
+                f.write("\n".join(lines))
+
+        await message.reply_document(
+            document=txt_file_path,
+            caption=f"`{title}.txt`\n\n✅ Extracted video(s) information"
+        )
+        os.remove(txt_file_path)
+
+    except yt_dlp.utils.DownloadError as e:
+        await message.reply_text(f"🚨 **Error occurred:**\n<pre>{str(e)}</pre>")
 
     # Extract the YouTube links
     videos = []
